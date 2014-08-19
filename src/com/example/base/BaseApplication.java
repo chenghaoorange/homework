@@ -33,8 +33,6 @@ public class BaseApplication extends Application {
 				.memoryCacheExtraOptions(480, 800)
 				// default = device screen dimensions
 				.discCacheExtraOptions(480, 800, CompressFormat.JPEG, 75, null)
-				// .taskExecutor(...)
-				// .taskExecutorForCachedImages(...)
 				.threadPoolSize(3)
 				// default
 				.threadPriority(Thread.NORM_PRIORITY - 1)
