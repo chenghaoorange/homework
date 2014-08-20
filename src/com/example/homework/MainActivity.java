@@ -13,12 +13,9 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewParent;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
-import android.widget.RelativeLayout;
-import android.widget.RelativeLayout.LayoutParams;
 import android.widget.TextView;
 
 import com.example.base.BaseApplication;
@@ -91,7 +88,6 @@ public class MainActivity extends Activity {
 	}
 
 	private class ViewHolder {
-		private RelativeLayout rlItemLayout;
 		private TextView tvTitle;
 		private TextView tvDescription;
 		private ImageView ivPic;
@@ -129,8 +125,6 @@ public class MainActivity extends Activity {
 				holder.tvDescription = (TextView) view
 						.findViewById(R.id.tvDescription);
 				holder.ivPic = (ImageView) view.findViewById(R.id.ivPic);
-				holder.rlItemLayout = (RelativeLayout) view
-						.findViewById(R.id.rlItemLayout);
 				view.setTag(holder);
 			} else {
 				holder = (ViewHolder) view.getTag();
