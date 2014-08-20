@@ -13,9 +13,12 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewParent;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
+import android.widget.RelativeLayout.LayoutParams;
 import android.widget.TextView;
 
 import com.example.base.BaseApplication;
@@ -62,6 +65,14 @@ public class MainActivity extends Activity {
 					e.printStackTrace();
 				}
 			}
+
+			@Override
+			@Deprecated
+			public void onFailure(Throwable error, String content) {
+				// TODO Auto-generated method stub
+				dialog.dismiss();
+				ViewTools.showLongToast(MainActivity.this, "internet error");
+			}
 		});
 	}
 
@@ -80,6 +91,7 @@ public class MainActivity extends Activity {
 	}
 
 	private class ViewHolder {
+		private RelativeLayout rlItemLayout;
 		private TextView tvTitle;
 		private TextView tvDescription;
 		private ImageView ivPic;
@@ -117,6 +129,8 @@ public class MainActivity extends Activity {
 				holder.tvDescription = (TextView) view
 						.findViewById(R.id.tvDescription);
 				holder.ivPic = (ImageView) view.findViewById(R.id.ivPic);
+				holder.rlItemLayout = (RelativeLayout) view
+						.findViewById(R.id.rlItemLayout);
 				view.setTag(holder);
 			} else {
 				holder = (ViewHolder) view.getTag();
@@ -134,33 +148,30 @@ public class MainActivity extends Activity {
 							@Override
 							public void onLoadingStarted(String arg0, View arg1) {
 								// TODO Auto-generated method stub
-
 							}
 
 							@Override
 							public void onLoadingFailed(String arg0, View arg1,
 									FailReason arg2) {
 								// TODO Auto-generated method stub
-
 							}
 
 							@Override
 							public void onLoadingComplete(String arg0,
 									View arg1, Bitmap bitmap) {
-								DisplayMetrics dm = new DisplayMetrics();
-								getWindowManager().getDefaultDisplay()
-										.getMetrics(dm);
-								holder.tvDescription.setMaxWidth(dm.widthPixels-bitmap.getWidth()-(int)getResources().getDimension(R.dimen.listmargin));
-								holder.tvDescription
-										.setTextColor(getResources().getColor(
-												android.R.color.holo_red_dark));
+								 DisplayMetrics dm = new DisplayMetrics();
+								 getWindowManager().getDefaultDisplay()
+								 .getMetrics(dm);
+								 holder.tvDescription.setMaxWidth(dm.widthPixels
+								 - bitmap.getWidth()
+								 - (int) getResources().getDimension(
+								 R.dimen.listmargin));
 							}
 
 							@Override
 							public void onLoadingCancelled(String arg0,
 									View arg1) {
 								// TODO Auto-generated method stub
-
 							}
 						});
 			} catch (Exception e) {
@@ -171,6 +182,7 @@ public class MainActivity extends Activity {
 		}
 
 	}
+
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
