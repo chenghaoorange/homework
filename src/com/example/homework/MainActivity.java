@@ -6,9 +6,9 @@ import org.json.JSONObject;
 
 import android.app.Activity;
 import android.app.Dialog;
-import android.content.Context;
+import android.graphics.Bitmap;
 import android.os.Bundle;
-import android.view.LayoutInflater;
+import android.util.DisplayMetrics;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -18,10 +18,13 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.example.base.BaseApplication;
 import com.example.base.BaseHttp;
 import com.example.tools.ViewTools;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.assist.FailReason;
+import com.nostra13.universalimageloader.core.assist.ImageLoadingListener;
 
 public class MainActivity extends Activity {
 
@@ -31,7 +34,7 @@ public class MainActivity extends Activity {
 	private int refreshmenuID = 1;
 	private Dialog dialog;
 	private ListView listView;
-	private MyListAdapter adapter=null;
+	private MyListAdapter adapter = null;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -65,10 +68,10 @@ public class MainActivity extends Activity {
 	public void bindData() {
 		try {
 			getActionBar().setTitle(myJsonData.getString("title"));
-			if(adapter==null){
-				adapter =new MyListAdapter();
+			if (adapter == null) {
+				adapter = new MyListAdapter();
 				listView.setAdapter(adapter);
-			}else{
+			} else {
 				adapter.notifyDataSetChanged();
 			}
 		} catch (JSONException e) {
@@ -76,15 +79,17 @@ public class MainActivity extends Activity {
 		}
 	}
 
+	private class ViewHolder {
+		private TextView tvTitle;
+		private TextView tvDescription;
+		private ImageView ivPic;
+	}
+
 	private class MyListAdapter extends BaseAdapter {
-		private class ViewHolder {
-			private TextView tvTitle;
-			private TextView tvDescription;
-			private ImageView ivPic;
-		}
+
 		@Override
 		public int getCount() {
-			if(rowData==null){
+			if (rowData == null) {
 				return 0;
 			}
 			return rowData.length();
@@ -92,55 +97,77 @@ public class MainActivity extends Activity {
 
 		@Override
 		public Object getItem(int position) {
-			if (rowData != null && rowData.length() > 0) {
-				try {
-					return rowData.get(position);
-				} catch (JSONException e) {
-					e.printStackTrace();
-				}
-			}
-			return null;
+			return position;
 		}
 
 		@Override
 		public long getItemId(int position) {
-			if (rowData != null && rowData.length() > 0) {
-				return position;
-			}
-			return 0;
+			return position;
 		}
 
 		@Override
-		public View getView(int position, View convertView, ViewGroup group) {
-			ViewHolder holder;
+		public View getView(int position, View convertView, ViewGroup parent) {
+			final ViewHolder holder;
+			View view = convertView;
 			if (convertView == null) {
 				holder = new ViewHolder();
-				LayoutInflater mInflater = (LayoutInflater) MainActivity.this
-						.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-				convertView = mInflater.inflate(R.layout.item_manlist, null,
-						false);
-				holder.tvTitle = (TextView) convertView
-						.findViewById(R.id.tvTitle);
-				holder.tvDescription = (TextView) convertView
+				view = getLayoutInflater().inflate(R.layout.item_manlist,
+						parent, false);
+				holder.tvTitle = (TextView) view.findViewById(R.id.tvTitle);
+				holder.tvDescription = (TextView) view
 						.findViewById(R.id.tvDescription);
-				holder.ivPic = (ImageView) convertView
-						.findViewById(R.id.ivPic);
-				convertView.setTag(holder);
+				holder.ivPic = (ImageView) view.findViewById(R.id.ivPic);
+				view.setTag(holder);
 			} else {
-				holder = (ViewHolder) convertView.getTag();
+				holder = (ViewHolder) view.getTag();
 			}
+
 			try {
-				JSONObject itemdata =rowData.getJSONObject(position); 
+				JSONObject itemdata = rowData.getJSONObject(position);
 				holder.tvTitle.setText(itemdata.getString("title"));
 				holder.tvDescription.setText(itemdata.getString("description"));
 				ImageLoader.getInstance().displayImage(
-						itemdata.getString("imageHref"),
-						holder.ivPic);
+						itemdata.getString("imageHref"), holder.ivPic,
+						BaseApplication.displayImageOptions,
+						new ImageLoadingListener() {
+
+							@Override
+							public void onLoadingStarted(String arg0, View arg1) {
+								// TODO Auto-generated method stub
+
+							}
+
+							@Override
+							public void onLoadingFailed(String arg0, View arg1,
+									FailReason arg2) {
+								// TODO Auto-generated method stub
+
+							}
+
+							@Override
+							public void onLoadingComplete(String arg0,
+									View arg1, Bitmap bitmap) {
+								DisplayMetrics dm = new DisplayMetrics();
+								getWindowManager().getDefaultDisplay()
+										.getMetrics(dm);
+								holder.tvDescription.setMaxWidth(dm.widthPixels-bitmap.getWidth()-(int)getResources().getDimension(R.dimen.listmargin));
+								holder.tvDescription
+										.setTextColor(getResources().getColor(
+												android.R.color.holo_red_dark));
+							}
+
+							@Override
+							public void onLoadingCancelled(String arg0,
+									View arg1) {
+								// TODO Auto-generated method stub
+
+							}
+						});
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			return convertView;
+			return view;
 		}
 
 	}

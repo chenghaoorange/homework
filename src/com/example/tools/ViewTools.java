@@ -21,10 +21,16 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnTouchListener;
 import android.view.WindowManager;
+import android.widget.ImageView;
 import android.widget.LinearLayout.LayoutParams;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.example.base.BaseApplication;
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.assist.FailReason;
+import com.nostra13.universalimageloader.core.assist.SimpleImageLoadingListener;
 
 public class ViewTools {
 
@@ -185,7 +191,7 @@ public class ViewTools {
 		Intent intent =new Intent(Intent.ACTION_SEND);
 		intent.setType("image/*");
 		intent.putExtra(Intent.EXTRA_TEXT, content);
-		intent.putExtra(Intent.EXTRA_SUBJECT, "故事梦分享");
+		intent.putExtra(Intent.EXTRA_SUBJECT, "");
 		context.startActivity(intent);
 	}
 	
@@ -214,6 +220,7 @@ public class ViewTools {
 			}
 		});
 	}
+	
 	/**
 	 * 获取spinner的背景
 	 * @return
